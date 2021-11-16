@@ -230,7 +230,7 @@ commonLabels:
   env: dev
 
 patches:
-- deployment.yaml
+- path: deployment.yaml
 EOF
 ```
 
@@ -249,7 +249,7 @@ commonLabels:
   env: prod
 
 patches:
-- deployment.yaml
+- path: deployment.yaml
 EOF
 ```
 
@@ -319,7 +319,7 @@ commonLabels:
   app: chat-app
 
 patches:
-- deployment.yaml
+- path: deployment.yaml
 
 EOF
 ```
