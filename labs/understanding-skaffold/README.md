@@ -300,7 +300,7 @@ Notice that the file contains the reference to the image that will be used in th
 skaffold deploy --profile staging --build-artifacts artifacts.json --tail
 ```
 
-Once deployment is complete you should see output from three pods similar to the following:
+Once deployment is complete you should see output from two pods (as that is what the deployment overlay applied by Kustomize says) similar to the following:
 
 ```
 [skaffold-kustomize] Hello world from pod skaffold-kustomize-staging-xxxxxxxxxx-xxxxx!
