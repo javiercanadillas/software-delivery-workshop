@@ -70,7 +70,7 @@ EOF
    Create a `kustomization.yaml` file that references the `deployment.yaml` as the base resources. 
 ```
 cat <<EOF > chat-app/base/kustomization.yaml
-bases:
+resources:
   - deployment.yaml
 EOF
 ```
@@ -115,7 +115,7 @@ In this example, you will add a namespace, name prefix and add some labels to yo
 
 ```
 cat <<EOF > chat-app/base/kustomization.yaml
-bases:
+resources:
   - deployment.yaml
 
 namespace: my-namespace
@@ -207,7 +207,7 @@ Rewrite the base kustomization.yaml, remove the namespace and name prefix as thi
 
 ```
 cat <<EOF > chat-app/base/kustomization.yaml
-bases:
+resources:
   - deployment.yaml
 
 commonLabels:
@@ -221,7 +221,7 @@ Now implement the variations for dev and prod by executing the following command
 
 ```
 cat <<EOF > chat-app/dev/kustomization.yaml
-bases:
+resources:
 - ../base
 
 namespace: dev
@@ -240,7 +240,7 @@ Note the addition of the `patches`:  section of the file. This indicates that ku
 
 ```
 cat <<EOF > chat-app/prod/kustomization.yaml
-bases:
+resources:
 - ../base
 
 namespace: prod
@@ -299,7 +299,7 @@ EOF
 
 ```
 cat <<EOF > shared-kustomize/kustomization.yaml
-bases:
+resources:
   - deployment.yaml
 EOF
 ```
@@ -312,7 +312,7 @@ Copy and execute the following commands in your terminal
 
 ```
 cat <<EOF > chat-app/base/kustomization.yaml
-bases:
+resources:
   - ../../shared-kustomize
 
 commonLabels:
