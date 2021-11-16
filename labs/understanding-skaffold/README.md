@@ -113,13 +113,13 @@ As well as this, in this section you can see the reference to the `Dockerfile`
 to be used to build the images. Skaffold additionally supports other build
 tools such as `Jib`, `Maven`, `Gradle`, Cloud-native `Buildpacks`, `Bazel` and
 custom scripts. You can read more about this configuration in the [Skaffold
-Build documentation]().
+Build documentation](https://skaffold.dev/docs/pipeline-stages/builders/).
 
 # Deploy
 
 The `deploy` section contains configuration that defines how the application
 should be deployed. In this case you can see an example for a default
-deployment that configures Skaffold to use the the
+deployment that configures Skaffold to use the
 [`Kustomize`](https://kustomize.io/) tool.
 
 The `Kustomize` tool provides functionality for generating Kubernetes manifests
@@ -154,7 +154,7 @@ three, overriding the base configuration.
 1. Open the following file `app > main.go` in the IDE pane. This is a simple
    golang application that writes a string to `stdout` every second.
 
-2. Notice that the application also outputs the name of the Kubernetes pod in which it it running.
+2. Notice that the application also outputs the name of the Kubernetes pod in which it's running.
 
 # Viewing the Dockerfile
 
