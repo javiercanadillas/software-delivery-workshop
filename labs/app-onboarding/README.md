@@ -138,11 +138,15 @@ In this step you will substitute values in an app template and post the resultin
 
 ### Define a name for the new application
 
+You'll store the application name in a shell variable as you'll be reusing it later:
+
 ```bash
 export APP_NAME=my-app
 ```
 
 ### Retrieve the Golang template repository
+
+You're first application instance will be based on Go. Clone the full template repository and go to the directory containing the Go template:
 
 ```bash
 cd $WORK_DIR/
@@ -153,21 +157,25 @@ cd app-templates/golang
 
 ### Substitute placeholder values
 
-One of the most common needs for onboarding is swapping out variables in templates for actual instances used in the application. For example providing the application name. The following command creates instances of all .tmpl files with the values stored in environment variables.  
+As pointed out earlier, one of the most common needs for onboarding is swapping out variables in templates for actual instances used in the application. For example, providing the application name. The following command creates instances of all .tmpl files in the application instance with the values stored in environment variables:
 
 ```bash
-for template in $(find . -name '*.tmpl'); do envsubst < ${template} > ${template%.*}; done
+for template in $(find . -name '*.tmpl'); do \
+  envsubst < ${template} > ${template%.*}
+  done
 ```
 
 ### Create a new repo and store the updated files
 
-1. Create an empty remote repository in your GitHub account
+You now have the scaffolding of your application template ready, with the proper application name in place. Follow these steps to get your app into a GitHub repo so you can further track application changes there: 
+
+1. Create an empty remote repository in your GitHub account using the provided helper script:
 
 ```bash
 $BASE_DIR/scripts/git/gh.sh create ${APP_NAME}
 ```
 
-2. Push the template repository to your remote repository
+2. Push the template repository to your remote repository, the source control system for your application:
 
 ```bash
 git init && git symbolic-ref HEAD refs/heads/main && git add . && git commit -m "initial commit"
@@ -175,10 +183,9 @@ git remote add origin $GIT_BASE_URL/${APP_NAME}
 git push origin main
 ```
 
-Now that the app instance has been created it's time to implement continuous builds.   
- 
+Now that the app instance has been created, **it's time to implement continuous builds.**
 
-## Configuring automated pipeline execution 
+## Configuring automated pipeline execution
 
 The central part of a Continuous Integration system is the ability to execute the pipeline logic based on the events originating in the source control system. When a developer commits code in their repository events are fired that can be configured to trigger processes in other systems. 
 
@@ -186,14 +193,18 @@ In this step you will configure GitHub to call Google Cloud Build and execute yo
 
 ### Enable Secure Access
 
-You will need 2 elements to configure secure access to your application pipeline. An API key and a secret unique to the pipeline. 
+You will need 2 elements to configure secure access to your application pipeline:
+- An API key
+- A secret unique to the pipeline. 
 
 #### API Key
 
-The API key is used to identify the client that is calling into a given API. In this case the client will be GitHub. A best practice not covered here is to lock down the scope of the API key to only the specific APIs that client will be accessing. You created the key in a previous step.
+The API key is used to identify the client that is calling into a given API. In this case the client will be GitHub, and the API being called is the Cloud Build API. A best practice not covered here is to lock down the scope of the API key to only the specific APIs that client will be accessing.
+
+You created the key in a previous step:
 
 1. You can review the key by clicking on [this link]( https://console.cloud.google.com/apis/credentials) 
-2. You can ensure the value is set by running the following command
+2. You can ensure the value is set by running the following command:
 
 ```bash
 echo $API_KEY_VALUE
@@ -201,9 +212,9 @@ echo $API_KEY_VALUE
 
 #### Pipeline Secret
 
-The secrets are used to authorize a caller and ensure they have rights to the specific cloud build target job. You may have 2 different repositories in GitHub that should only have access to their own pipelines. While the API_KEY limits which APIs can be utilized by github (in this case the Cloud Build API is being called), the secret limits which Job in the Cloud Build API can be executed by the client. 
+The secrets are used to authorize a caller and ensure they have rights to the specific Cloud Build target job. You may have several repositories in GitHub, and each of them should only have access to their own pipelines. While the API_KEY limits which APIs can be utilized by Github (in this case the Cloud Build API is being called), the secret limits which job in Cloud Build can be executed by the client. 
 
-1. Define the secret name, location and value
+1. Define the secret name, location and value:
 
 ```bash
 SECRET_NAME=${APP_NAME}-webhook-trigger-cd-secret
@@ -211,13 +222,13 @@ SECRET_PATH=projects/${PROJECT_NUMBER}/secrets/${SECRET_NAME}/versions/1
 SECRET_VALUE=$(sed "s/[^a-zA-Z0-9]//g" <<< $(openssl rand -base64 15))
 ```
 
-2. Create the secret
+2. Create the secret in Secret Manager:
 
 ```bash
 printf ${SECRET_VALUE} | gcloud secrets create ${SECRET_NAME} --data-file=-
 ```
 
-3. Allow Cloud Build to read the secret
+3. Allow Cloud Build to read the secret from Secret Manager by granting the Cloud Build Service Account the right permission:
 
 ```bash
 gcloud secrets add-iam-policy-binding ${SECRET_NAME} \
@@ -225,7 +236,7 @@ gcloud secrets add-iam-policy-binding ${SECRET_NAME} \
   --role='roles/secretmanager.secretAccessor'
 ```
 
-### Create Cloud Build Trigger
+### Create a Cloud Build Trigger
 
 The Cloud Build Trigger is the configuration that will actually be executing the CICD processes.   
 The job requires a few key values to be provided on creation in order to properly configure the trigger. 
@@ -237,18 +248,17 @@ export TRIGGER_NAME=${APP_NAME}-clouddeploy-webhook-trigger
 export BUILD_YAML_PATH=$WORK_DIR/app-templates/golang/build/cloudbuild-build-only.yaml
 ```
 
-2. Define the location of the shared base configuration repo. 
+2. Define the location of the shared base configuration repo: 
 
 ```bash
 export KUSTOMIZE_REPO=${GIT_BASE_URL}/mcd-shared_kustomize
 ```
 
-3. A variable was set in the onboard-env.sh script defining the project's container registry. Review the value with the command below. 
+3. A variable was set in the onboard-env.sh script defining the project's container registry called `IMAGE_REPO`. Review it's current value:
 
 ```bash
 echo $IMAGE_REPO
 ```
-
 
 5. Create CloudBuild Webhook Trigger using the variables created previously. The application repo location is pulled from the body of the request from GitHub. A value below references the path in the request body where it's located
 
@@ -261,7 +271,6 @@ echo $IMAGE_REPO
 ```
 
 6. Review the newly created Cloud Build trigger in the Console by [visiting this link](https://console.cloud.google.com/cloud-build/triggers)
-
 
 
 ### Configure GitHub Webhook
