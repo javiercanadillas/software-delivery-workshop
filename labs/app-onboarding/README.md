@@ -12,7 +12,7 @@ The fist four steps will guide you through all the required one-time setup in de
 
 ## Preparing your workspace
 
-1. Open Cloud Shell editor by visiting the following url:
+1. Open Cloud Shell editor by visiting the following URL:
 
 ```bash
 https://ide.cloud.google.com
@@ -336,7 +336,7 @@ echo ${GIT_BASE_URL}/${APP_NAME}
 echo ${GIT_BASE_URL}/${APP_NAME}/blob/main/k8s/prod/deployment.yaml#L24
 ```
 
-4. Review the web hook configured at the url below
+4. Review the web hook configured at the URL below
 
 ```bash
 echo ${GIT_BASE_URL}/${APP_NAME}/settings/hooks
