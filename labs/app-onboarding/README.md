@@ -8,7 +8,7 @@ In this lab you will:
 * Configure automated pipeline execution.
 * Bundle onboarding logic for simple app creation.
 
-These steps will guide you through all the required one-time setup that in a real situation is automated by something like the last step in this lab (Bundle onboarding logic for simple app creation).
+The fist four steps will guide you through all the required one-time setup in detail. In a real situation all these steps are automated by something like the script used in the last step. For the sake of understanding the process, this lab covers both scenarios.
 
 ## Preparing your workspace
 
